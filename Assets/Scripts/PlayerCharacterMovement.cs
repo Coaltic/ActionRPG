@@ -3,6 +3,7 @@ using UnityEngine;
 public class PlayerCharacterMovement : MonoBehaviour
 {
     public float speed = 5;
+    public float runSpeed = 7.5f;
     public int facingDirection = 1;
     public Rigidbody2D rb;
     public Animator anim;
@@ -23,8 +24,15 @@ public class PlayerCharacterMovement : MonoBehaviour
         anim.SetFloat("horizontal", Mathf.Abs(horizontal));
         anim.SetFloat("vertical", Mathf.Abs(vertical));
 
+        if (Input.GetKey(KeyCode.LeftShift))
+        {
+            rb.linearVelocity = new Vector2(horizontal, vertical) * runSpeed;
+        }
+        else
+        {
+            rb.linearVelocity = new Vector2(horizontal, vertical) * speed;
+        }
 
-        rb.linearVelocity = new Vector2(horizontal, vertical) * speed;
     }
 
     void Flip()
