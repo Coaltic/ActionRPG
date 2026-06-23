@@ -3,8 +3,9 @@ using UnityEngine;
 public class Enemy_Movement : MonoBehaviour
 {
     public float speed;
+    public float attackRange = 1;
 
-    private EnemyState enemyState;
+    public EnemyState enemyState;
     private int facingDirection = 1;
     private Rigidbody2D rb;
     private Transform player;
@@ -26,12 +27,32 @@ public class Enemy_Movement : MonoBehaviour
     {
         if (enemyState == EnemyState.Chasing)
         {
-            if (player.position.x > transform.position.x && facingDirection == -1 ||
-                player.position.x < transform.position.x && facingDirection == 1)
-            {
-                Flip();
-            }
+            Chase();
+        }
+        else if (enemyState == EnemyState.Attacking)
+        {
+            rb.linearVelocity = Vector2.zero;
+        }
+    }
 
+    void Chase()
+    {
+        if (Vector2.Distance(transform.position, player.transform.position) <= attackRange)
+        {
+            Debug.Log(Vector2.Distance(transform.position, player.transform.position));
+            ChangeState(EnemyState.Attacking);
+        }
+
+        else if (player.position.x > transform.position.x && facingDirection == -1 ||
+                player.position.x < transform.position.x && facingDirection == 1)
+        {
+            Flip();
+        }
+
+        // Debug.Log("moving");
+        // Debug.Log(enemyState);
+        //if (enemyState == EnemyState.Chasing)
+        {
             Vector2 direction = (player.position - transform.position).normalized;
             rb.linearVelocity = direction * speed;
         }
@@ -43,6 +64,19 @@ public class Enemy_Movement : MonoBehaviour
         transform.localScale = new Vector3(transform.localScale.x * -1, transform.localScale.y, transform.localScale.z);
     }
 
+    /*private void OnTriggerEnter2D(Collider2D collision)
+    {
+        if (collision.gameObject.tag == "Player")
+        {
+            if (player == null)
+            {
+                player = collision.transform;
+            }
+
+            ChangeState(EnemyState.Chasing);
+        }
+    }*/
+
     private void OnTriggerEnter2D(Collider2D collision)
     {
         if (collision.gameObject.tag == "Player")
@@ -53,6 +87,7 @@ public class Enemy_Movement : MonoBehaviour
             }
 
             ChangeState(EnemyState.Chasing);
+            //Debug.Log("ontrigger stay");
         }
     }
 
@@ -71,9 +106,10 @@ public class Enemy_Movement : MonoBehaviour
         // exit current animation
         if (enemyState == EnemyState.Idle)
             anim.SetBool("isIdle", false);
-
         else if (enemyState == EnemyState.Chasing)
             anim.SetBool("isChasing", false);
+        else if (enemyState == EnemyState.Attacking)
+            anim.SetBool("isAttacking", false);
 
         // update state
         enemyState = newState;
@@ -81,9 +117,10 @@ public class Enemy_Movement : MonoBehaviour
         // update new animation
         if (enemyState == EnemyState.Idle)
             anim.SetBool("isIdle", true);
-
         else if (enemyState == EnemyState.Chasing)
             anim.SetBool("isChasing", true);
+        else if (enemyState == EnemyState.Attacking)
+            anim.SetBool("isAttacking", true);
     }
 }
 
@@ -91,4 +128,5 @@ public enum EnemyState
 {
     Idle,
     Chasing,
+    Attacking,
 }
