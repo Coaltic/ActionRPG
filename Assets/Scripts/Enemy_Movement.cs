@@ -7,6 +7,7 @@ public class Enemy_Movement : MonoBehaviour
 
     public EnemyState enemyState;
     private int facingDirection = 1;
+    public float attackCooldown = 2;
     private Rigidbody2D rb;
     private Transform player;
     private Animator anim;
