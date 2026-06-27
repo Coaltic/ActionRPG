@@ -3,12 +3,18 @@ using UnityEngine;
 public class Enemy_Combat : MonoBehaviour
 {
 
-    public int health = 5;
-    public int damage = 1;
+    public int health;
+    public int damage;
     public Transform attackPoint;
     public float weaponRange;
     public LayerMask playerLayer;
 
+    public void Start()
+    {
+        health = 5;
+        damage = 1;
+
+    }
 
     private void OnCollisionEnter2D(Collision2D collision)
     {
