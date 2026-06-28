@@ -8,6 +8,8 @@ public class Enemy_Movement : MonoBehaviour
     public EnemyState enemyState;
     private int facingDirection = 1;
     public float attackCooldown = 2;
+
+    private float attackCooldownTimer;
     private Rigidbody2D rb;
     private Transform player;
     private Animator anim;
@@ -26,6 +28,11 @@ public class Enemy_Movement : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        if (attackCooldownTimer > 0)
+        {
+            attackCooldownTimer -= Time.deltaTime;
+        }
+
         if (enemyState == EnemyState.Chasing)
         {
             Chase();
@@ -38,7 +45,7 @@ public class Enemy_Movement : MonoBehaviour
 
     void Chase()
     {
-        if (Vector2.Distance(transform.position, player.transform.position) <= attackRange)
+        if (Vector2.Distance(transform.position, player.transform.position) <= attackRange && attackCooldownTimer <= 0)
         {
             Debug.Log(Vector2.Distance(transform.position, player.transform.position));
             ChangeState(EnemyState.Attacking);
