@@ -14,7 +14,7 @@ public class Enemy_Movement : MonoBehaviour
 
     public float attackCooldownTimer;
     private Rigidbody2D rb;
-    private Transform player;
+    public Transform player;
     private Animator anim;
 
 
@@ -30,11 +30,11 @@ public class Enemy_Movement : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        // CheckForPlayer();
+        CheckForPlayer();
         if (attackCooldownTimer > 0)
         {
             attackCooldownTimer -= Time.deltaTime;
-            Debug.Log(attackCooldownTimer);
+            // Debug.Log(attackCooldownTimer);
         }
 
         if (enemyState == EnemyState.Chasing)
@@ -58,7 +58,7 @@ public class Enemy_Movement : MonoBehaviour
 
         // Debug.Log("moving");
         // Debug.Log(enemyState);
-        //if (enemyState == EnemyState.Chasing)
+        if (enemyState == EnemyState.Chasing)
         {
             Vector2 direction = (player.position - transform.position).normalized;
             rb.linearVelocity = direction * speed;
@@ -70,19 +70,6 @@ public class Enemy_Movement : MonoBehaviour
         facingDirection *= -1;
         transform.localScale = new Vector3(transform.localScale.x * -1, transform.localScale.y, transform.localScale.z);
     }
-
-    /*private void OnTriggerEnter2D(Collider2D collision)
-    {
-        if (collision.gameObject.tag == "Player")
-        {
-            if (player == null)
-            {
-                player = collision.transform;
-            }
-
-            ChangeState(EnemyState.Chasing);
-        }
-    }*/
 
     private void CheckForPlayer()
     {
@@ -112,7 +99,7 @@ public class Enemy_Movement : MonoBehaviour
             ChangeState(EnemyState.Idle);
         }
 
-        ChangeState(EnemyState.Chasing);
+        // ChangeState(EnemyState.Chasing);
         // Debug.Log("ontrigger stay");
     }
 
@@ -137,7 +124,15 @@ public class Enemy_Movement : MonoBehaviour
         else if (enemyState == EnemyState.Attacking)
             anim.SetBool("isAttacking", true);
     }
+
+    private void OnDrawGizmosSelected()
+    {
+        Gizmos.color = Color.red;
+        Gizmos.DrawWireSphere(detectionPoint.position, playerDetectRange);
+    }
 }
+
+
 
 public enum EnemyState
 {
